@@ -14,17 +14,25 @@ import androidx.compose.foundation.gestures.ScrollableDefaults
 import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.isGranted
 import com.google.accompanist.permissions.rememberPermissionState
@@ -49,7 +57,11 @@ class MainActivity : ComponentActivity() {
 
 @OptIn(ExperimentalPermissionsApi::class)
 @Composable
-fun DisplayTest(modifier: Modifier) {
+fun DisplayTest(
+    modifier: Modifier,
+    callLogViewModel: CallLogViewModel = viewModel()
+) {
+    val callLogUiState by callLogViewModel.callLogState.collectAsState()
     val context = LocalContext.current
     Column(
         modifier = Modifier.padding(16.dp)
@@ -78,24 +90,47 @@ fun DisplayTest(modifier: Modifier) {
             if (permissionState.status.isGranted) {
                 val cursor : Cursor? = context.contentResolver.query(
                     CallLog.Calls.CONTENT_URI.buildUpon()
-                        .appendQueryParameter(LIMIT_PARAM_KEY, "1")
+//                        .appendQueryParameter(LIMIT_PARAM_KEY, "1")
                         .build(),
                     null, null, null, null)
                 cursor?.use {
+                    val data = mutableListOf<CallLogInfo>()
                     while (it.moveToNext()) {
-                        val id = it.getInt(it.getColumnIndexOrThrow("_id"))
-                        val formattedNumber = it.getString(it.getColumnIndexOrThrow("formatted_number"))
-                        val duration = it.getInt(it.getColumnIndexOrThrow("duration"))
-                        val number = it.getString(it.getColumnIndexOrThrow("number"))
-                        val date = it.getLong(it.getColumnIndexOrThrow("date"))
-                        val type = it.getInt(it.getColumnIndexOrThrow("type"))
-                        Text("id: $id")
-                        Text(formattedNumber)
-                        Text("dur: $duration")
-                        Text("Number: $number")
-                        Text("date: $date")
-                        Text("Type: $type")
+                        data.add(
+                            CallLogInfo(
+                                id = it.getInt(it.getColumnIndexOrThrow("_id")),
+                                formattedNumber = it.getString(it.getColumnIndexOrThrow("formatted_number")),
+                                duration = it.getInt(it.getColumnIndexOrThrow("duration")),
+                                number = it.getString(it.getColumnIndexOrThrow("number")),
+                                date = it.getLong(it.getColumnIndexOrThrow("date")),
+                                type = it.getInt(it.getColumnIndexOrThrow("type")),
+                            )
+                        )
+                        callLogViewModel.addData(data)
                     }
+                }
+            }
+        }
+        if (callLogUiState.callLog.isNotEmpty()) {
+            LazyColumn {
+                item {
+                    Row {
+                        Text("总计数量: ")
+                        Text(callLogUiState.callLog.size.toString())
+                    }
+                }
+                items(callLogUiState.callLog) {
+                    Card(
+                        modifier = Modifier.fillMaxWidth().height(60.dp)
+                    ) {
+                        Column(
+                            modifier = Modifier.padding(6.dp)
+                        ) {
+                            Text("格式号码: " + it.formattedNumber)
+                            Text("通话时长: " + it.duration.toString())
+                        }
+                    }
+                    Spacer(modifier = Modifier.height(10.dp))
                 }
             }
         }
@@ -103,3 +138,25 @@ fun DisplayTest(modifier: Modifier) {
 }
 
 
+data class CallLogInfo (
+    val id: Int,
+    val formattedNumber: String,
+    val duration: Int,
+    val number: String,
+    val date: Long,
+    val type: Int
+)
+
+
+//val id = it.getInt(it.getColumnIndexOrThrow("_id"))
+//val formattedNumber = it.getString(it.getColumnIndexOrThrow("formatted_number"))
+//val duration = it.getInt(it.getColumnIndexOrThrow("duration"))
+//val number = it.getString(it.getColumnIndexOrThrow("number"))
+//val date = it.getLong(it.getColumnIndexOrThrow("date"))
+//val type = it.getInt(it.getColumnIndexOrThrow("type"))
+//Text("id: $id")
+//Text(formattedNumber)
+//Text("dur: $duration")
+//Text("Number: $number")
+//Text("date: $date")
+//Text("Type: $type")

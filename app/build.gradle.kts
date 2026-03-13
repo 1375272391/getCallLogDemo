@@ -57,4 +57,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 //    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
     implementation(libs.android.compose.accompanist)
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.1")
+
 }

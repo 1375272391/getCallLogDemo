@@ -31,6 +31,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -71,17 +72,17 @@ fun DisplayTest(
         )
 
         if (permissionState.status.isGranted) {
-            Text("已取得读取通话记录读取权限")
+            Text(stringResource(R.string.has_been_permissions))
             Log.i("TAG", "READ_CALL_LOG is GRANTED")
         }
             else {
-            Text("未授予读取通话记录读取权限")
+            Text(stringResource(R.string.no_permissions))
             Button(
                 onClick = {
                     permissionState.launchPermissionRequest()
                 }
             ) {
-                Text("Request Permission")
+                Text(stringResource(R.string.request_permission))
             }
         }
         Column(
@@ -114,20 +115,24 @@ fun DisplayTest(
         if (callLogUiState.callLog.isNotEmpty()) {
             LazyColumn {
                 item {
-                    Row {
-                        Text("总计数量: ")
+                    Row (
+                      modifier = Modifier.padding(6.dp)
+                    ) {
+                        Text(stringResource(R.string.sum))
                         Text(callLogUiState.callLog.size.toString())
                     }
                 }
                 items(callLogUiState.callLog) {
                     Card(
-                        modifier = Modifier.fillMaxWidth().height(60.dp)
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(60.dp)
                     ) {
                         Column(
                             modifier = Modifier.padding(6.dp)
                         ) {
-                            Text("格式号码: " + it.formattedNumber)
-                            Text("通话时长: " + it.duration.toString())
+                            Text(stringResource(R.string.formatted_number) + it.formattedNumber)
+                            Text(stringResource(R.string.duration) + it.duration.toString())
                         }
                     }
                     Spacer(modifier = Modifier.height(10.dp))

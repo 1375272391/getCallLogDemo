@@ -2,9 +2,9 @@
 <resources>
     <string name="app_name">读取通话记录</string>
     <string name="request_permission">请求权限</string>
-    <string name="has_been_permissions">已取得通话记录权限</string>
-    <string name="no_permissions">未获取权限</string>
+    <string name="no_permissions">需要读取通话记录权限</string>
     <string name="sum">"总计: "</string>
     <string name="formatted_number">"格式号码:  "</string>
     <string name="duration">"通话时长: "</string>
+    <string name="empty">数据为空</string>
 </resources>

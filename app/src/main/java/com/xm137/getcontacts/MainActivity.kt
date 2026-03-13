@@ -70,12 +70,9 @@ fun DisplayTest(
         val permissionState = rememberPermissionState(
             permission = Manifest.permission.READ_CALL_LOG
         )
-
         if (permissionState.status.isGranted) {
-            Text(stringResource(R.string.has_been_permissions))
             Log.i("TAG", "READ_CALL_LOG is GRANTED")
-        }
-            else {
+        } else {
             Text(stringResource(R.string.no_permissions))
             Button(
                 onClick = {
@@ -85,72 +82,65 @@ fun DisplayTest(
                 Text(stringResource(R.string.request_permission))
             }
         }
-        Column(
-            modifier = Modifier.padding(16.dp)
-        ) {
-            if (permissionState.status.isGranted) {
-                val cursor : Cursor? = context.contentResolver.query(
-                    CallLog.Calls.CONTENT_URI.buildUpon()
+
+        if (permissionState.status.isGranted) {
+            val cursor : Cursor? = context.contentResolver.query(
+                CallLog.Calls.CONTENT_URI.buildUpon()
 //                        .appendQueryParameter(LIMIT_PARAM_KEY, "1")
-                        .build(),
-                    null, null, null, null)
-                cursor?.use {
-                    val data = mutableListOf<CallLogInfo>()
-                    while (it.moveToNext()) {
-                        data.add(
-                            CallLogInfo(
-                                id = it.getInt(it.getColumnIndexOrThrow("_id")),
-                                formattedNumber = it.getString(it.getColumnIndexOrThrow("formatted_number")),
-                                duration = it.getInt(it.getColumnIndexOrThrow("duration")),
-                                number = it.getString(it.getColumnIndexOrThrow("number")),
-                                date = it.getLong(it.getColumnIndexOrThrow("date")),
-                                type = it.getInt(it.getColumnIndexOrThrow("type")),
-                            )
+                    .build(),
+                null, null, null, null)
+            cursor?.use {
+                val data = mutableListOf<CallLogInfo>()
+                while (it.moveToNext()) {
+                    data.add(
+                        CallLogInfo(
+                            id = it.getInt(it.getColumnIndexOrThrow("_id")),
+                            formattedNumber = it.getString(it.getColumnIndexOrThrow("formatted_number")),
+                            duration = it.getInt(it.getColumnIndexOrThrow("duration")),
+                            number = it.getString(it.getColumnIndexOrThrow("number")),
+                            date = it.getLong(it.getColumnIndexOrThrow("date")),
+                            type = it.getInt(it.getColumnIndexOrThrow("type")),
                         )
-                        callLogViewModel.addData(data)
-                    }
+                    )
+                    callLogViewModel.addData(data)
                 }
             }
-        }
-        if (callLogUiState.callLog.isNotEmpty()) {
-            LazyColumn {
-                item {
-                    Row (
-                      modifier = Modifier.padding(6.dp)
-                    ) {
-                        Text(stringResource(R.string.sum))
-                        Text(callLogUiState.callLog.size.toString())
-                    }
-                }
-                items(callLogUiState.callLog) {
-                    Card(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(60.dp)
-                    ) {
-                        Column(
+            if (callLogUiState.callLog.isNotEmpty()) {
+                LazyColumn {
+                    item {
+                        Row (
                             modifier = Modifier.padding(6.dp)
                         ) {
-                            Text(stringResource(R.string.formatted_number) + it.formattedNumber)
-                            Text(stringResource(R.string.duration) + it.duration.toString())
+                            Text(stringResource(R.string.sum))
+                            Text(callLogUiState.callLog.size.toString())
                         }
                     }
-                    Spacer(modifier = Modifier.height(10.dp))
+                    items(callLogUiState.callLog) {
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(60.dp)
+                        ) {
+                            Column(
+                                modifier = Modifier.padding(6.dp)
+                            ) {
+                                Text(stringResource(R.string.formatted_number) + it.formattedNumber)
+                                Text(stringResource(R.string.duration) + it.duration.toString())
+                            }
+                        }
+                        Spacer(modifier = Modifier.height(10.dp))
+                    }
                 }
+            } else {
+                Text(stringResource(R.string.empty))
+
             }
         }
     }
 }
 
 
-data class CallLogInfo (
-    val id: Int,
-    val formattedNumber: String,
-    val duration: Int,
-    val number: String,
-    val date: Long,
-    val type: Int
-)
+
 
 
 //val id = it.getInt(it.getColumnIndexOrThrow("_id"))

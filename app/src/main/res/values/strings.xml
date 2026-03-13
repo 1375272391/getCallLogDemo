@@ -1,9 +1,9 @@
 <resources>
     <string name="app_name">getcontacts</string>
     <string name="request_permission">Request Permission</string>
-    <string name="has_been_permissions">Permissions have been obtained</string>
-    <string name="no_permissions">Required permissions not obtained</string>
+    <string name="no_permissions">Permission to read call logs is required.</string>
     <string name="sum">"sum: "</string>
     <string name="formatted_number">"FormattedNumber: "</string>
     <string name="duration">"duration: "</string>
+    <string name="empty">Data is empty</string>
 </resources>

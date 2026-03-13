@@ -111,8 +111,7 @@ fun DisplayTest(
                         Row (
                             modifier = Modifier.padding(6.dp)
                         ) {
-                            Text(stringResource(R.string.sum))
-                            Text(callLogUiState.callLog.size.toString())
+                            Text(stringResource(R.string.sum) + callLogUiState.callLog.size)
                         }
                     }
                     items(callLogUiState.callLog) {

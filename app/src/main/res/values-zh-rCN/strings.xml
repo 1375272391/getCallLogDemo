@@ -7,4 +7,5 @@
     <string name="formatted_number">"格式号码:  "</string>
     <string name="duration">"通话时长: "</string>
     <string name="empty">数据为空</string>
+    <string name="number">"号码: "</string>
 </resources>

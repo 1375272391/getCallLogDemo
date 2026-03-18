@@ -125,13 +125,13 @@ fun DisplayTest(
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(80.dp)
+                                .height(85.dp)
                         ) {
                             Column(
                                 modifier = Modifier.padding(6.dp)
                             ) {
                                 Text(stringResource(R.string.formatted_number) + it.formattedNumber)
-                                Text("号码: " + it.number)
+                                Text(stringResource(R.string.number) + it.number)
                                 Text(stringResource(R.string.duration) + it.duration.toString())
                             }
                         }

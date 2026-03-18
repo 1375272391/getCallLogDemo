@@ -21,6 +21,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
@@ -45,11 +46,16 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GetcontactsTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    DisplayTest(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-
+                Scaffold(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(top = 8.dp)
+                ) { innerPadding ->
+                    SelectionContainer {
+                        DisplayTest(
+                            modifier = Modifier.padding(innerPadding)
+                        )
+                    }
                 }
             }
         }
@@ -114,16 +120,18 @@ fun DisplayTest(
                             Text(stringResource(R.string.sum) + callLogUiState.callLog.size)
                         }
                     }
+
                     items(callLogUiState.callLog) {
                         Card(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .height(60.dp)
+                                .height(80.dp)
                         ) {
                             Column(
                                 modifier = Modifier.padding(6.dp)
                             ) {
                                 Text(stringResource(R.string.formatted_number) + it.formattedNumber)
+                                Text("号码: " + it.number)
                                 Text(stringResource(R.string.duration) + it.duration.toString())
                             }
                         }
